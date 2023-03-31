@@ -1,0 +1,131 @@
+itsdangerous==1.1.0
+click==6.7
+httplib2==0.14.0
+passlib==1.7.1
+aniso8601==8.0.0
+blinker==1.4
+PyYAML==5.1.2
+requests==2.21.0
+statsd==3.3.0
+greenlet==0.4.16
+jsonschema==3.1.1
+pysaml2==6.1.0
+pycrypto==2.6.1
+python-dotenv==0.19.2
+funcy==1.13
+semver==2.8.1
+xlsxwriter==1.2.2
+parsedatetime==2.4
+ua-parser==0.8.0
+user-agents==2.0
+disposable-email-domains>=0.0.52
+# Uncomment the requirement for ldap3 if using ldap.
+# It is not included by default because of the GPL license conflict.
+# ldap3==2.2.4
+Authlib==0.15.5
+advocate==1.0.0
+
+#
+
+pystache==0.6.0
+
+#
+
+# jinja2==2.10.3
+# flask==1.1.1
+# flask-restful==0.3.7
+# flask-login==0.4.1
+# flask-sqlalchemy==2.4.1
+# flask-migrate==2.5.2
+# flask-mail==0.9.1
+# flask-talisman==0.7.0
+# flask-limiter==0.9.3
+# flask-wtf==0.14.3
+# wtforms==2.2.1
+# markupsafe==1.1.1
+# werkzeug==0.16.1
+jinja2
+flask
+flask-restful
+flask-login
+flask-sqlalchemy
+flask-migrate
+flask-mail
+flask-talisman
+flask-limiter
+flask-wtf
+wtforms
+markupsafe
+werkzeug
+
+#
+
+sqlalchemy~=1.4.47
+sqlalchemy-searchable~=1.4.1
+sqlalchemy-utils==0.36.8
+sqlparse~=0.4.3
+pyparsing~=3.0.9
+# sqlalchemy==1.3.10
+# sqlalchemy-utils==0.34.2
+# we can't upgrade sqlalchemy-searchable version as newer versions require postgresql > 9.6, but we target older versions at the moment.
+# sqlalchemy-searchable==0.10.6
+# we need to pin the version of pyparsing, as newer versions break sqlalchemy-searchable-10.0.6 (newer versions no longer depend on it)
+# sqlparse==0.3.0
+# pyparsing==2.3.0
+
+#
+
+psycopg-binary~=3.1.8
+
+#
+
+gevent~=22.10.2
+
+#
+
+pytz>=2022.6
+python-dateutil~=2.8.2
+
+#
+
+sentry-sdk~=1.18.0
+
+#
+
+redis==3.5.0
+rq==1.5.0
+rq-scheduler==0.9.1
+
+#
+
+gunicorn~=20.1.0
+supervisor==4.1.0
+supervisor_checks==0.8.1
+
+# 
+
+restrictedpython~=6.0
+
+#
+
+# cryptography==2.8
+# pyOpenSSL==19.0.0
+cryptography~=40.0.1
+
+#
+
+# sshtunnel==0.1.5
+sshtunnel~=0.4.0
+
+#
+
+pypd~=1.1.0
+maxminddb-geolite2==2018.703
+
+#
+
+simplejson~=3.18.4
+
+#
+
+PyJWT==1.7.1
