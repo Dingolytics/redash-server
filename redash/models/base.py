@@ -33,9 +33,10 @@ db = RedashSQLAlchemy(session_options={"expire_on_commit": False})
 # on the configuration phase of models.
 db.configure_mappers()
 
+
 # listen to a few database events to set up functions, trigger updates
 # and indexes for the full text search
-make_searchable(options={"regconfig": "pg_catalog.simple"})
+make_searchable(db.metadata, options={"regconfig": "pg_catalog.simple"})
 
 
 class SearchBaseQuery(BaseQuery, SearchQueryMixin):

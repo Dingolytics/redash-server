@@ -57,19 +57,21 @@ services:
     restart: unless-stopped
 
   postgres:
-    image: postgres:9.5-alpine
+    image: postgres:15.2-alpine
     ports:
       - "15432:5432"
-    # The following turns the DB into less durable, but gains significant performance improvements for the tests run (x3
-    # improvement on my personal machine). We should consider moving this into a dedicated Docker Compose configuration for
-    # tests.
-    command: "postgres -c fsync=off -c full_page_writes=off -c synchronous_commit=OFF"
     restart: unless-stopped
     environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
       POSTGRES_HOST_AUTH_METHOD: "trust"
+    volumes:
+      - pgdata15:/var/lib/postgresql/data/pgdata
 
   email:
     image: maildev/maildev
     ports:
       - "1080:80"
     restart: unless-stopped
+
+volumes:
+  pgdata15:

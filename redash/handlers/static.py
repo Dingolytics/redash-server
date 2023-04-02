@@ -1,12 +1,11 @@
-from flask import render_template, safe_join, send_file
-
+from flask import render_template, send_file
 from flask_login import login_required
 from redash import settings
 from redash.handlers import routes
 from redash.handlers.authentication import base_href
 from redash.handlers.base import org_scoped_rule
 from redash.security import csp_allows_embeding
-
+from werkzeug.utils import safe_join
 
 def render_index():
     if settings.MULTI_ORG:

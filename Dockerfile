@@ -58,11 +58,17 @@ ENV PIP_NO_CACHE_DIR=1
 RUN pip install --upgrade pip~=23.0.1
 
 # We first copy only the requirements file, to avoid rebuilding on every file change.
-COPY requirements_dev.txt ./
+COPY requirements-dev.txt ./
 RUN pip install -r requirements-dev.txt
 
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
+
+# Development: updating dependencies
+RUN pip install funcy~=2.0 parsedatetime~=2.6 httplib2~=0.22.0
+RUN pip install psycopg2-binary~=2.9.5 jsonschema~=4.17.3 \
+  passlib~=1.7.4 semver~=2.13.0 pysaml2~=7.4.1
+RUN pip install 'wtforms[email]'
 
 COPY --chown=redash . /app
 RUN chown redash /app
