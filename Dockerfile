@@ -48,7 +48,7 @@ RUN apt-get update && \
 #   && rm /tmp/simba_odbc.zip \
 #   && rm -rf /tmp/SimbaSparkODBC*; fi
 
-WORKDIR /app
+WORKDIR /app/
 
 # Disable PIP Cache and Version Check
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
@@ -64,17 +64,16 @@ RUN pip install -r requirements-dev.txt
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
-# Development: updating dependencies
-RUN pip install funcy~=2.0 parsedatetime~=2.6 httplib2~=0.22.0
-RUN pip install psycopg2-binary~=2.9.5 jsonschema~=4.17.3 \
-  passlib~=1.7.4 semver~=2.13.0 pysaml2~=7.4.1
-RUN pip install 'wtforms[email]'
+COPY LICENSE.original manage.py  ./
+COPY etc ./etc
+COPY migrations ./migrations
+COPY redash ./redash
+COPY tests ./tests
 
-COPY --chown=redash . /app
-RUN chown redash /app
+RUN chown -R redash ./
 
 USER redash
 
-ENTRYPOINT ["/app/bin/docker-entrypoint"]
+ENTRYPOINT ["/app/etc/docker-entrypoint.sh"]
 
 CMD ["server"]

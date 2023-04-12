@@ -22,10 +22,9 @@ When forking an original work, it is important to appreciate the effort and valu
 
 Our approach involves collaborating with the Redash community to contribute back to the original project if possible while also maintaining a separate codebase for our own project. 
 
+Check the <LICENSE.original> file for the original license.
 
 License
 -------
 
 BSD-2-Clause.
-
-Check the <LICENSE.original> file for the original license.

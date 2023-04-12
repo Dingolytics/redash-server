@@ -1,15 +1,5 @@
-client/.tmp/
-client/dist/
-node_modules/
-viz-lib/node_modules/
+**/__pycache__
+.env
 .tmp/
 .venv/
-venv/
 .git/
-/.codeclimate.yml
-/.coverage
-/coverage.xml
-/.circleci/
-/.github/
-/netlify.toml
-/setup/
