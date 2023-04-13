@@ -70,6 +70,8 @@ COPY migrations ./migrations
 COPY redash ./redash
 COPY tests ./tests
 
+RUN apt-get update && apt-get install -y --no-install-recommends python3-watchdog
+
 RUN chown -R redash ./
 
 USER redash

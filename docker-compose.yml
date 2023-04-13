@@ -5,8 +5,8 @@ version: "3.9"
 x-redash-service: &redash-service
   build:
     context: .
-  # volumes:
-  #   - .:/app
+  volumes:
+    - .:/app
   env_file:
     - .env
 
@@ -28,7 +28,7 @@ services:
       - postgres
       - redis
     ports:
-      - "5001:5000"
+      - "5000:5000"
       - "5678:5678"
     environment:
       <<: *redash-environment
@@ -41,8 +41,8 @@ services:
       - server
     environment:
       <<: *redash-environment
-    # command: dev_scheduler
-    command: scheduler
+    command: dev_scheduler
+    # command: scheduler
 
   worker:
     <<: *redash-service

@@ -5,6 +5,7 @@ from flask import Blueprint, current_app, request
 
 from flask_login import current_user, login_required
 from flask_restful import Resource, abort
+from flask_sqlalchemy.query import Query
 from redash import settings
 from redash.authentication import current_org
 from redash.models import db
@@ -79,7 +80,7 @@ def get_object_or_404(fn, *args, **kwargs):
     return rv
 
 
-def paginate(query_set, page, page_size, serializer, **kwargs):
+def paginate(query_set: Query, page, page_size, serializer, **kwargs):
     count = query_set.count()
 
     if page < 1:
@@ -91,7 +92,7 @@ def paginate(query_set, page, page_size, serializer, **kwargs):
     if page_size > 250 or page_size < 1:
         abort(400, message="Page size is out of range (1-250).")
 
-    results = query_set.paginate(page, page_size)
+    results = query_set.paginate(page=page, per_page=page_size)
 
     # support for old function based serializers
     if isclass(serializer):
@@ -127,6 +128,10 @@ def order_results(results, default_order, allowed_orders, fallback=True):
     Orders the given results with the sort order as requested in the
     "order" request query parameter or the given default order.
     """
+    return results
+
+    # TODO: Figure out how to make this work with SQLAlchemy 1.4
+
     # See if a particular order has been requested
     requested_order = request.args.get("order", "").strip()
 

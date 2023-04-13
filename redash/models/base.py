@@ -1,6 +1,7 @@
 import functools
 
-from flask_sqlalchemy import BaseQuery, SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy.query import Query as BaseQuery
 from sqlalchemy.orm import object_session
 from sqlalchemy.pool import NullPool
 from sqlalchemy_searchable import make_searchable, vectorizer, SearchQueryMixin
