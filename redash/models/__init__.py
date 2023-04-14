@@ -352,7 +352,7 @@ class QueryResult(db.Model, QueryResultPersistence, BelongsToOrgMixin):
             cls.query.filter(
                 Query.id.is_(None), cls.retrieved_at < age_threshold
             ).outerjoin(Query)
-        ).options(load_only("id")).all()
+        ).options(load_only("id"))
 
     @classmethod
     def get_latest(cls, data_source, query, max_age=0):
@@ -1159,14 +1159,13 @@ class Dashboard(TimestampMixin, BelongsToOrgMixin, db.Model):
     @classmethod
     def all_tags(cls, org, user):
         dashboards = cls.all(org, user.group_ids, user.id)
-
         tag_column = func.unnest(cls.tags).label("tag")
         usage_count = func.count(1).label("usage_count")
-
+        dashboards_ids = dashboards.options(load_only("id")).all()
         query = (
             db.session.query(tag_column, usage_count)
             .group_by(tag_column)
-            .filter(Dashboard.id.in_(dashboards.options(load_only("id"))))
+            .filter(Dashboard.id.in_(dashboards_ids))
             .order_by(usage_count.desc())
         )
         return query
