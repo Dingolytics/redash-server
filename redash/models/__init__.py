@@ -42,7 +42,6 @@ from redash.utils.configuration import ConfigurationContainer
 from redash.models.parameterized_query import ParameterizedQuery
 
 from .base import db, gfk_type, Column, GFKBase, SearchBaseQuery, key_type, primary_key
-from .changes import ChangeTrackingMixin, Change  # noqa
 from .mixins import BelongsToOrgMixin, TimestampMixin
 from .organizations import Organization
 from .types import (
@@ -353,7 +352,7 @@ class QueryResult(db.Model, QueryResultPersistence, BelongsToOrgMixin):
             cls.query.filter(
                 Query.id.is_(None), cls.retrieved_at < age_threshold
             ).outerjoin(Query)
-        ).options(load_only("id"))
+        ).options(load_only("id")).all()
 
     @classmethod
     def get_latest(cls, data_source, query, max_age=0):
@@ -463,7 +462,7 @@ def should_schedule_next(
     "schedule",
     "schedule_failures",
 )
-class Query(ChangeTrackingMixin, TimestampMixin, BelongsToOrgMixin, db.Model):
+class Query(TimestampMixin, BelongsToOrgMixin, db.Model):
     id = primary_key("Query")
     version = Column(db.Integer, default=1)
     org_id = Column(key_type("Organization"), db.ForeignKey("organizations.id"))
@@ -1084,7 +1083,7 @@ def generate_slug(ctx):
 @generic_repr(
     "id", "name", "slug", "user_id", "org_id", "version", "is_archived", "is_draft"
 )
-class Dashboard(ChangeTrackingMixin, TimestampMixin, BelongsToOrgMixin, db.Model):
+class Dashboard(TimestampMixin, BelongsToOrgMixin, db.Model):
     id = primary_key("Dashboard")
     version = Column(db.Integer)
     org_id = Column(key_type("Organization"), db.ForeignKey("organizations.id"))

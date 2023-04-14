@@ -52,7 +52,7 @@ class ChangeTrackingMixin(object):
     _clean_values = None
 
     def __init__(self, *a, **kw):
-        super(ChangeTrackingMixin, self).__init__(*a, **kw)
+        super().__init__(*a, **kw)
         self.record_changes(self.user)
 
     def prep_cleanvalues(self):
@@ -69,8 +69,7 @@ class ChangeTrackingMixin(object):
             (col,) = attr.columns
             previous = getattr(self, attr.key, None)
             self._clean_values[col.name] = previous
-
-        super(ChangeTrackingMixin, self).__setattr__(key, value)
+        super().__setattr__(key, value)
 
     def record_changes(self, changed_by):
         db.session.add(self)
@@ -83,7 +82,6 @@ class ChangeTrackingMixin(object):
                     "previous": self._clean_values[col.name],
                     "current": getattr(self, attr.key),
                 }
-
         db.session.add(
             Change(
                 object=self,

@@ -260,11 +260,9 @@ class QueryListResource(BaseQueryListResource):
         query = models.Query.create(**query_def)
         models.db.session.add(query)
         models.db.session.commit()
-
         self.record_event(
             {"action": "create", "object_id": query.id, "object_type": "query"}
         )
-
         return QuerySerializer(query, with_visualizations=True).serialize()
 
 
