@@ -58,19 +58,19 @@ help() {
   echo ""
   echo "Usage:"
   echo ""
-
+  echo "manage -- CLI to manage redash"
+  echo "create_db -- create database tables"
   echo "server -- start Redash server (with gunicorn)"
   echo "worker -- start a single RQ worker"
-  echo "dev_worker -- start a single RQ worker with code reloading"
   echo "scheduler -- start an rq-scheduler instance"
-  echo "dev_scheduler -- start an rq-scheduler instance with code reloading"
   echo ""
+  echo "tests -- run tests"
   echo "shell -- open shell"
+  echo "dev_scheduler -- start an rq-scheduler instance with code reloading"
+  echo "dev_worker -- start a single RQ worker with code reloading"
   echo "dev_server -- start Flask development server with debugger and auto reload"
   echo "debug -- start Flask development server with remote debugger via ptvsd"
-  echo "create_db -- create database tables"
-  echo "manage -- CLI to manage redash"
-  echo "tests -- run tests"
+  echo ""
 }
 
 tests() {

@@ -4,7 +4,9 @@ EXPOSE 5000
 
 RUN useradd --create-home redash
 
-# Ubuntu packages
+WORKDIR /app/
+
+# Install packages
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
   curl \
@@ -14,6 +16,7 @@ RUN apt-get update && \
   libffi-dev \
   sudo \
   git-core \
+  python3-watchdog \
   # Postgres client
   libpq-dev \
   # ODBC support:
@@ -29,7 +32,6 @@ RUN apt-get update && \
   libsasl2-modules-gssapi-mit && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
-
 
 # ARG TARGETPLATFORM
 # ARG databricks_odbc_driver_url=https://databricks.com/wp-content/uploads/2.6.10.1010-2/SimbaSparkODBC-2.6.10.1010-2-Debian-64bit.zip
@@ -48,32 +50,22 @@ RUN apt-get update && \
 #   && rm /tmp/simba_odbc.zip \
 #   && rm -rf /tmp/SimbaSparkODBC*; fi
 
-WORKDIR /app/
-
-# Disable PIP Cache and Version Check
+# Install Python dependencies
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV PIP_NO_CACHE_DIR=1
+COPY requirements.txt requirements-dev.txt ./
+RUN pip install --upgrade pip~=23.0.1 --timeout 120 \
+    && pip install -r requirements-dev.txt -r requirements.txt --timeout 120
 
-# Rollback pip version to avoid legacy resolver problem
-RUN pip install --upgrade pip~=23.0.1
-
-# We first copy only the requirements file, to avoid rebuilding on every file change.
-COPY requirements-dev.txt ./
-RUN pip install -r requirements-dev.txt
-
-COPY requirements.txt ./
-RUN pip install -r requirements.txt
-
+# Copy Redash source
 COPY LICENSE.original manage.py  ./
 COPY etc ./etc
 COPY migrations ./migrations
 COPY redash ./redash
 COPY tests ./tests
 
-RUN apt-get update && apt-get install -y --no-install-recommends python3-watchdog
-
+# Change ownership of the Redash source
 RUN chown -R redash ./
-
 USER redash
 
 ENTRYPOINT ["/app/etc/docker-entrypoint.sh"]

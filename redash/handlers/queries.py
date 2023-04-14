@@ -129,7 +129,9 @@ class BaseQueryListResource(BaseResource):
             )
         else:
             results = models.Query.all_queries(
-                self.current_user.group_ids, self.current_user.id, include_drafts=True
+                self.current_user.group_ids,
+                self.current_user.id,
+                include_drafts=True
             )
         return filter_by_tags(results, models.Query.tags)
 
