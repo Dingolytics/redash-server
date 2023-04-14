@@ -93,10 +93,8 @@ class User(
 
     disabled_at = Column(db.DateTime(True), default=None, nullable=True)
     details = Column(
-        MutableDict.as_mutable(postgresql.JSONB),
-        nullable=True,
-        server_default="{}",
-        default={},
+        MutableDict.as_mutable(postgresql.JSONB), nullable=True,
+        server_default="{}", default={},
     )
     active_at = json_cast_property(
         db.DateTime(True), "details", "active_at", default=None

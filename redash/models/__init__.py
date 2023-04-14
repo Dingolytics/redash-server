@@ -48,8 +48,7 @@ from .types import (
     EncryptedConfiguration,
     MutableDict,
     MutableList,
-    PseudoJSON,
-    pseudo_json_cast_property
+    json_cast_property
 )
 from .users import AccessPermission, AnonymousUser, ApiUser, Group, User  # noqa
 
@@ -486,11 +485,17 @@ class Query(TimestampMixin, BelongsToOrgMixin, db.Model):
     )
     is_archived = Column(db.Boolean, default=False, index=True)
     is_draft = Column(db.Boolean, default=True, index=True)
-    schedule = Column(MutableDict.as_mutable(PseudoJSON), nullable=True)
-    interval = pseudo_json_cast_property(db.Integer, "schedule", "interval", default=0)
+    schedule = Column(
+        MutableDict.as_mutable(postgresql.JSONB), nullable=True,
+        server_default="{}", default={}
+    )
+    interval = json_cast_property(db.Integer, "schedule", "interval", default=0)
     schedule_failures = Column(db.Integer, default=0)
     visualizations = db.relationship("Visualization", cascade="all, delete-orphan")
-    options = Column(MutableDict.as_mutable(PseudoJSON), default={})
+    options = Column(
+        MutableDict.as_mutable(postgresql.JSONB),
+        server_default="{}", default={}
+    )
     search_vector = Column(
         TSVectorType(
             "id",
@@ -979,7 +984,10 @@ class Alert(TimestampMixin, BelongsToOrgMixin, db.Model):
     query_rel = db.relationship(Query, backref=backref("alerts", cascade="all"))
     user_id = Column(key_type("User"), db.ForeignKey("users.id"))
     user = db.relationship(User, backref="alerts")
-    options = Column(MutableDict.as_mutable(PseudoJSON))
+    options = Column(
+        MutableDict.as_mutable(postgresql.JSONB),
+        server_default="{}", default={}
+    )
     state = Column(db.String(255), default=UNKNOWN_STATE)
     subscriptions = db.relationship("AlertSubscription", cascade="all, delete-orphan")
     last_triggered_at = Column(db.DateTime(True), nullable=True)
@@ -1269,7 +1277,8 @@ class Event(db.Model):
     object_type = Column(db.String(255))
     object_id = Column(db.String(255), nullable=True)
     additional_properties = Column(
-        MutableDict.as_mutable(PseudoJSON), nullable=True, default={}
+        MutableDict.as_mutable(postgresql.JSONB), nullable=True,
+        server_default="{}", default={}
     )
     created_at = Column(db.DateTime(True), default=db.func.now())
 

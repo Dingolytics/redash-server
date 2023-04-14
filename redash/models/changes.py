@@ -1,8 +1,8 @@
 from sqlalchemy.inspection import inspect
+from sqlalchemy.dialects import postgresql
 from sqlalchemy_utils.models import generic_repr
 
 from .base import GFKBase, db, Column, primary_key, key_type
-from .types import PseudoJSON
 
 
 @generic_repr("id", "object_type", "object_id", "created_at")
@@ -13,7 +13,11 @@ class Change(GFKBase, db.Model):
     object_version = Column(db.Integer, default=0)
     user_id = Column(key_type("User"), db.ForeignKey("users.id"))
     user = db.relationship("User", backref="changes")
-    change = Column(PseudoJSON)
+    change = Column(
+        postgresql.JSON, nullable=True,
+        server_default="{}", default={},
+    )
+
     created_at = Column(db.DateTime(True), default=db.func.now())
 
     __tablename__ = "changes"
