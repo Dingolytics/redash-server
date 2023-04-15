@@ -18,7 +18,7 @@ class Organization(TimestampMixin, db.Model):
     name = Column(db.String(255))
     slug = Column(db.String(255), unique=True)
     settings = Column(
-        MutableDict.as_mutable(postgresql.JSONB), nullable=True,
+        MutableDict.as_mutable(postgresql.JSONB),
         server_default="{}", default={},
     )
     groups = db.relationship("Group", lazy="dynamic")
