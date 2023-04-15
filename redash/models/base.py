@@ -11,19 +11,32 @@ from redash import settings
 from redash.utils import json_dumps
 
 
-class RedashSQLAlchemy(SQLAlchemy):
-    def __init__(self, *args, **kwargs):
-        engine_options = kwargs.pop("engine_options", {})
-        engine_options.update(json_serializer=json_dumps)
-        if settings.SQLALCHEMY_ENABLE_POOL_PRE_PING:
-            engine_options.update(pool_pre_ping=True)
-        if settings.SQLALCHEMY_DISABLE_POOL:
-            engine_options["poolclass"] = NullPool
-            engine_options.pop("max_overflow", None)
-        super().__init__(*args, **kwargs)
+# class RedashSQLAlchemy(SQLAlchemy):
+#     def _make_engine(self, *args, **kwargs):
+#         # DEBUG:
+#         print("RedashSQLAlchemy._make_engine", flush=True)
+#         print("args: ", args, flush=True)
+#         print("kwargs: ", kwargs, flush=True)
+#         # /DEBUG:
+#         return super()._make_engine(*args, **kwargs)
 
 
-db = RedashSQLAlchemy(session_options={"expire_on_commit": False})
+def get_engine_options() -> dict:
+    """Get engine options for SQLAlchemy."""
+    # TODO: Utilize the `SQLALCHEMY_ENGINE_OPTIONS` setting via `app.config`
+    engine_options = {"json_serializer": json_dumps}
+    if settings.SQLALCHEMY_ENABLE_POOL_PRE_PING:
+        engine_options.update(pool_pre_ping=True)
+    if settings.SQLALCHEMY_DISABLE_POOL:
+        engine_options.update(poolclass=NullPool)
+        engine_options.pop("max_overflow", None)
+    return engine_options
+
+
+db = SQLAlchemy(
+    engine_options=get_engine_options(),
+    session_options={"expire_on_commit": False},
+)
 
 
 # Listen to a few database events to set up functions, trigger updates
@@ -62,7 +75,7 @@ def gfk_type(cls):
 
 class GFKBase(object):
     """
-    Compatibility with 'generic foreign key' approach Peewee used.
+    Compatibility with 'generic foreign key' approach Django used.
     """
 
     object_type = Column(db.String(255))

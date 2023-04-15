@@ -606,7 +606,8 @@ class Query(TimestampMixin, BelongsToOrgMixin, db.Model):
         # print('queries:', [x for x in queries], flush=True)
         tag_column = func.unnest(cls.tags).label("tag")
         usage_count = func.count(1).label("usage_count")
-        queries_ids = queries.options(load_only("id")).all()
+        # queries_ids = [x.id for x in queries.options(load_only("id"))]
+        queries_ids = queries.with_entities(Query.id).subquery()
         tags = (
             db.session.query(tag_column, usage_count)
             .group_by(tag_column)
@@ -631,7 +632,7 @@ class Query(TimestampMixin, BelongsToOrgMixin, db.Model):
         return [
             query
             for query in queries
-            if query.schedule["until"] is not None
+            if query.schedule.get("until") is not None
             and pytz.utc.localize(
                 datetime.datetime.strptime(query.schedule["until"], "%Y-%m-%d")
             )
@@ -1169,7 +1170,8 @@ class Dashboard(TimestampMixin, BelongsToOrgMixin, db.Model):
         dashboards = cls.all(org, user.group_ids, user.id)
         tag_column = func.unnest(cls.tags).label("tag")
         usage_count = func.count(1).label("usage_count")
-        dashboards_ids = dashboards.options(load_only("id")).all()
+        # dashboards_ids = [x.id for x in dashboards.options(load_only("id"))]
+        dashboards_ids = dashboards.with_entities(Dashboard.id).subquery()
         query = (
             db.session.query(tag_column, usage_count)
             .group_by(tag_column)
