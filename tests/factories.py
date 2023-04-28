@@ -65,6 +65,14 @@ data_source_factory = ModelFactory(
     org_id=1,
 )
 
+stream_factory = ModelFactory(
+    redash.models.Stream,
+    name=Sequence("Test {}"),
+    user=user_factory.create,
+    data_source=data_source_factory.create,
+    db_table='test_stream',    
+)
+
 dashboard_factory = ModelFactory(
     redash.models.Dashboard,
     name="test",
@@ -195,7 +203,6 @@ class Factory(object):
                     group=self.default_group, data_source=self._data_source
                 )
             )
-
         return self._data_source
 
     def create_org(self, **kwargs):

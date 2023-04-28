@@ -6,7 +6,7 @@ x-redash-service: &redash-service
   build:
     context: .
   volumes:
-    - .:/src/app
+    - .:/home/redash/app
   env_file:
     - .env
 
@@ -77,3 +77,4 @@ services:
 
 volumes:
   pgdata15:
+  # pgdata15-debug1:

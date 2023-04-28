@@ -52,6 +52,7 @@ from .types import (
     json_cast_property
 )
 from .users import AccessPermission, AnonymousUser, ApiUser, Group, User  # noqa
+from .streams import Stream
 
 logger = logging.getLogger(__name__)
 

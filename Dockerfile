@@ -40,7 +40,7 @@ ENV PATH=/home/${USERNAME}/.local/bin:$PATH
 WORKDIR /home/${USERNAME}/app/
 
 # Copy source and configurations
-COPY LICENSE LICENSE.redash manage.py ./etc/docker-entrypoint.sh ./
+COPY LICENSE LICENSE.redash manage.py docker-entrypoint.sh ./
 COPY etc ./etc/
 COPY migrations ./migrations/
 COPY redash ./redash/
