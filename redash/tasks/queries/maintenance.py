@@ -125,23 +125,22 @@ def cleanup_query_results():
     Each time the job deletes only settings.QUERY_RESULTS_CLEANUP_COUNT (100 by default) query results so it won't choke
     the database in case of many such results.
     """
-
     logger.info(
         "Running query results clean up (removing maximum of %d unused results, that are %d days old or more)",
         settings.QUERY_RESULTS_CLEANUP_COUNT,
         settings.QUERY_RESULTS_CLEANUP_MAX_AGE,
     )
-
-    unused_query_results = models.QueryResult.unused(
-        settings.QUERY_RESULTS_CLEANUP_MAX_AGE
+    unused_query_results_ids = (
+        models.QueryResult.unused(settings.QUERY_RESULTS_CLEANUP_MAX_AGE)
+        .limit(settings.QUERY_RESULTS_CLEANUP_COUNT)
+        .with_entities(models.QueryResult.id)
+        .subquery()
     )
-    deleted_count = models.QueryResult.query.filter(
-        models.QueryResult.id.in_(
-            unused_query_results.limit(settings.QUERY_RESULTS_CLEANUP_COUNT).all()
-        )
+    delete_results = models.QueryResult.query.filter(
+        models.QueryResult.id.in_(unused_query_results_ids)
     ).delete(synchronize_session=False)
     models.db.session.commit()
-    logger.info("Deleted %d unused query results.", deleted_count)
+    logger.info("Deleted %d unused query results.", delete_results)
 
 
 def remove_ghost_locks():

@@ -142,7 +142,7 @@ class QueryResult(db.Model, QueryResultPersistence, BelongsToOrgMixin):
             cls.query.filter(
                 Query.id.is_(None), cls.retrieved_at < age_threshold
             ).outerjoin(Query)
-        ).options(load_only("id"))
+        )
 
     @classmethod
     def get_latest(cls, data_source, query, max_age=0):
