@@ -67,7 +67,10 @@ class ScheduledQueriesExecutions(object):
         self.executions = redis_connection.hgetall(self.KEY_NAME)
 
     def update(self, query_id):
-        redis_connection.hmset(self.KEY_NAME, {query_id: time.time()})
+        redis_connection.hset(
+            self.KEY_NAME, '', 0, mapping={query_id: time.time()}
+        )
+        # redis_connection.hmset(self.KEY_NAME, {query_id: time.time()})
 
     def get(self, query_id):
         timestamp = self.executions.get(str(query_id))
@@ -311,7 +314,7 @@ class Query(TimestampMixin, BelongsToOrgMixin, db.Model):
     def archive(self, user=None):
         db.session.add(self)
         self.is_archived = True
-        self.schedule = None
+        self.schedule = {}
 
         for vis in self.visualizations:
             for w in vis.widgets:
@@ -454,7 +457,6 @@ class Query(TimestampMixin, BelongsToOrgMixin, db.Model):
                     schedule_until = pytz.utc.localize(
                         datetime.datetime.strptime(query.schedule["until"], "%Y-%m-%d")
                     )
-
                     if schedule_until <= now:
                         continue
 

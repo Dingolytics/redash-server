@@ -6,7 +6,6 @@ from redash.models import Alert, AlertSubscription, db
 class TestAlertResourceGet(BaseTestCase):
     def test_returns_200_if_allowed(self):
         alert = self.factory.create_alert()
-
         rv = self.make_request("get", "/api/alerts/{}".format(alert.id))
         self.assertEqual(rv.status_code, 200)
 
@@ -21,9 +20,7 @@ class TestAlertResourceGet(BaseTestCase):
     def test_returns_404_if_admin_from_another_org(self):
         second_org = self.factory.create_org()
         second_org_admin = self.factory.create_admin(org=second_org)
-
         alert = self.factory.create_alert()
-
         rv = self.make_request(
             "get",
             "/api/alerts/{}".format(alert.id),
@@ -37,8 +34,11 @@ class TestAlertResourcePost(BaseTestCase):
     def test_updates_alert(self):
         alert = self.factory.create_alert()
         rv = self.make_request(
-            "post", "/api/alerts/{}".format(alert.id), data={"name": "Testing"}
+            "post",
+            "/api/alerts/{}".format(alert.id),
+            data={"name": "Testing"}
         )
+        self.assertEqual(rv.status_code, 200)
 
 
 class TestAlertResourceDelete(BaseTestCase):
@@ -48,17 +48,17 @@ class TestAlertResourceDelete(BaseTestCase):
         db.session.commit()
         rv = self.make_request("delete", "/api/alerts/{}".format(alert.id))
         self.assertEqual(rv.status_code, 200)
-
         self.assertEqual(Alert.query.get(subscription.alert.id), None)
         self.assertEqual(AlertSubscription.query.get(subscription.id), None)
 
-    def test_returns_403_if_not_allowed(self):
+    def test_returns_403_if_not_allowed_delete(self):
         alert = self.factory.create_alert()
-
-        user = self.factory.create_user()
-        rv = self.make_request("delete", "/api/alerts/{}".format(alert.id), user=user)
+        rv = self.make_request(
+            "delete",
+            "/api/alerts/{}".format(alert.id),
+            user=self.factory.create_user()
+        )
         self.assertEqual(rv.status_code, 403)
-
         rv = self.make_request(
             "delete",
             "/api/alerts/{}".format(alert.id),
@@ -66,13 +66,14 @@ class TestAlertResourceDelete(BaseTestCase):
         )
         self.assertEqual(rv.status_code, 200)
 
-    def test_returns_404_for_unauthorized_users(self):
+    def test_returns_404_for_unauthorized_users_delete(self):
         alert = self.factory.create_alert()
-
         second_org = self.factory.create_org()
         second_org_admin = self.factory.create_admin(org=second_org)
         rv = self.make_request(
-            "delete", "/api/alerts/{}".format(alert.id), user=second_org_admin
+            "delete",
+            "/api/alerts/{}".format(alert.id),
+            user=second_org_admin
         )
         self.assertEqual(rv.status_code, 404)
 

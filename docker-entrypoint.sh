@@ -91,6 +91,7 @@ tests() {
   else
     TEST_ARGS=$@
   fi
+
   exec pytest $TEST_ARGS
 }
 

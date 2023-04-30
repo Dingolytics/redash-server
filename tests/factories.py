@@ -44,7 +44,7 @@ user_factory = ModelFactory(
     redash.models.User,
     name="John Doe",
     email=Sequence("test{}@example.com"),
-    password_hash=pwd_context.encrypt("test1234"),
+    password_hash=pwd_context.hash("test1234"),
     group_ids=[2],
     org_id=1,
 )
@@ -92,7 +92,7 @@ query_factory = ModelFactory(
     user=user_factory.create,
     is_archived=False,
     is_draft=False,
-    schedule=None,
+    schedule={},
     data_source=data_source_factory.create,
     org_id=1,
 )
@@ -233,13 +233,11 @@ class Factory(object):
             "org": self.org,
             "group_ids": [self.admin_group.id, self.default_group.id],
         }
-
         if "org" in kwargs:
             args["group_ids"] = [
                 kwargs["org"].default_group.id,
                 kwargs["org"].admin_group.id,
             ]
-
         args.update(kwargs)
         return user_factory.create(**args)
 

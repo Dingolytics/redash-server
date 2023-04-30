@@ -22,7 +22,7 @@ def empty_schedules():
 
     queries = models.Query.past_scheduled_queries()
     for query in queries:
-        query.schedule = None
+        query.schedule = {}
     models.db.session.commit()
 
     logger.info("Deleted %d schedules.", len(queries))
@@ -112,8 +112,8 @@ def refresh_queries():
         "last_refresh_at": time.time(),
         "query_ids": json_dumps([q.id for q in enqueued]),
     }
-
-    redis_connection.hmset("redash:status", status)
+    redis_connection.hset("redash:status", '', '', mapping=status)
+    # redis_connection.hmset("redash:status", status)
     logger.info("Done refreshing queries: %s" % status)
 
 

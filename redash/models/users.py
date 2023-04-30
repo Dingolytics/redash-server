@@ -118,7 +118,7 @@ class User(
     def __init__(self, *args, **kwargs):
         if kwargs.get("email") is not None:
             kwargs["email"] = kwargs["email"].lower()
-        super(User, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @property
     def is_disabled(self):
@@ -233,7 +233,7 @@ class User(
         return cls.query.filter(cls.email == email)
 
     def hash_password(self, password):
-        self.password_hash = pwd_context.encrypt(password)
+        self.password_hash = pwd_context.hash(password)
 
     def verify_password(self, password):
         return self.password_hash and pwd_context.verify(password, self.password_hash)

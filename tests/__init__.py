@@ -35,7 +35,7 @@ logging.getLogger("metrics").setLevel(logging.ERROR)
 
 def authenticate_request(c, user):
     with c.session_transaction() as sess:
-        sess["user_id"] = user.get_id()
+        sess["_user_id"] = user.get_id()
 
 
 @contextmanager
@@ -64,7 +64,8 @@ class BaseTestCase(TestCase):
 
     def tearDown(self):
         db.session.remove()
-        db.get_engine(self.app).dispose()
+        db.engine.dispose()
+        # db.get_engine(self.app).dispose()
         self.app_ctx.pop()
         redis_connection.flushdb()
 

@@ -23,7 +23,8 @@ down:
 	docker-compose down
 
 tests:
-	docker-compose run server tests
+	POSTGRES_DB=tests PGDATA_VOLUME=pgdata15-tests \
+		docker-compose run server tests
 
 lint:
 	./bin/flake8_tests.sh
