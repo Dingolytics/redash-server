@@ -72,7 +72,6 @@ class PermissionsCheckMixin(object):
             [permission in self.permissions for permission in permissions],
             True,
         )
-
         return has_permissions
 
 

@@ -48,7 +48,7 @@ def init_app(app):
                 return
             # END workaround
 
-            if not (current_user.is_authenticated or "_user_id" in session):
+            if not current_user.is_authenticated or ("_user_id" not in session):
                 csrf.protect()
 
     talisman.init_app(

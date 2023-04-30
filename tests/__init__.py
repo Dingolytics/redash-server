@@ -34,8 +34,8 @@ logging.getLogger("metrics").setLevel(logging.ERROR)
 
 
 def authenticate_request(c, user):
-    with c.session_transaction() as sess:
-        sess["_user_id"] = user.get_id()
+    with c.session_transaction() as session:
+        session["_user_id"] = user.get_id()
 
 
 @contextmanager
@@ -44,7 +44,6 @@ def authenticated_user(c, user=None):
         user = user_factory.create()
         db.session.commit()
     authenticate_request(c, user)
-
     yield user
 
 

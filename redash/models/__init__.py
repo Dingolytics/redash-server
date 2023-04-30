@@ -323,8 +323,8 @@ class Query(TimestampMixin, BelongsToOrgMixin, db.Model):
         for a in self.alerts:
             db.session.delete(a)
 
-        if user:
-            self.record_changes(user)
+        # if user:
+        #     self.record_changes(user)
 
     def regenerate_api_key(self):
         self.api_key = generate_token(40)

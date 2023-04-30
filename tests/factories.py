@@ -56,6 +56,11 @@ org_factory = ModelFactory(
     settings={},
 )
 
+group_factory = ModelFactory(
+    redash.models.Group,
+    name=Sequence("Test {}"),
+)
+
 data_source_factory = ModelFactory(
     redash.models.DataSource,
     name=Sequence("Test {}"),
@@ -233,21 +238,22 @@ class Factory(object):
             "org": self.org,
             "group_ids": [self.admin_group.id, self.default_group.id],
         }
+
         if "org" in kwargs:
             args["group_ids"] = [
                 kwargs["org"].default_group.id,
                 kwargs["org"].admin_group.id,
             ]
+
         args.update(kwargs)
         return user_factory.create(**args)
 
     def create_group(self, **kwargs):
         args = {"name": "Group", "org": self.org}
-
         args.update(kwargs)
-
-        g = redash.models.Group(**args)
-        return g
+        return group_factory.create(**args)
+        # g = redash.models.Group(**args)
+        # return g
 
     def create_alert(self, **kwargs):
         args = {"user": self.user, "query_rel": self.create_query()}
