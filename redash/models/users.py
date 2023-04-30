@@ -134,10 +134,10 @@ class User(
 
     def to_dict(self, with_api_key=False):
         profile_image_url = self.profile_image_url
+
         if self.is_disabled:
-            assets = app.extensions["webpack"]["assets"] or {}
             path = "images/avatar.svg"
-            profile_image_url = url_for("static", filename=assets.get(path, path))
+            profile_image_url = url_for("static", filename=path)
 
         d = {
             "id": self.id,
