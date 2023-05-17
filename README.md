@@ -46,6 +46,14 @@ Finally, start the server with:
 docker-compose up --build
 ```
 
+Run tests:
+
+```bash
+export POSTGRES_DB=tests
+export PGDATA_VOLUME=pgdata15-tests
+docker-compose run --rm server tests
+```
+
 
 TODO
 ----
