@@ -50,10 +50,11 @@ def after_execute(conn, clauseelement, multiparams, params,
     elif action in ["update", "insert", "delete"]:
         name = clauseelement.table.name
     else:
-        # create/drop tables, sqlalchemy internal schema queries, etc
+        # Create / drop tables, SQLAlchemy internal schema queries, etc
         return
 
     statsd_client.timing("db.{}.{}".format(name, action), duration)
+
     metrics_logger.debug("table=%s query=%s duration=%.2f", name, action, duration)
 
     if has_request_context():
