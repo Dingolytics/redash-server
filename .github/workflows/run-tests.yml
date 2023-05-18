@@ -13,6 +13,11 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
 
+      - name: Create .env file
+        run: |
+          echo "POSTGRES_DB=tests" >> .env
+          echo "PGDATA_VOLUME=pgdata15-tests" >> .env
+
       - name: Build via Docker compose
         env:
           COMPOSE_DOCKER_CLI_BUILD: 1
