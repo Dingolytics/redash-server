@@ -19,7 +19,10 @@ jobs:
           echo "PGDATA_VOLUME=pgdata15-tests" >> .env
 
       - name: Build via Docker compose
-        env:
-          COMPOSE_DOCKER_CLI_BUILD: 1
-          DOCKER_BUILDKIT: 1
-        run: docker compose build
+        run: make build
+
+      - name: Create database for tests
+        run: make test-db
+
+      - name: Run tests via Docker compose
+        run: docker-compose run server tests
