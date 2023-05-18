@@ -1,5 +1,7 @@
 import functools
 
+# from flask import session
+# from flask_login.utils import _get_user
 from flask_login import current_user
 from flask_restful import abort
 from funcy import flatten
@@ -62,6 +64,8 @@ class require_permissions(object):
     def __call__(self, fn):
         @functools.wraps(fn)
         def decorated(*args, **kwargs):
+            # DEBUG:
+            # print(current_user.id, session, _get_user())
             if self.allow_one:
                 has_permissions = any([current_user.has_permission(permission) for permission in self.permissions])
             else:
