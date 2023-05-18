@@ -21,8 +21,5 @@ jobs:
       - name: Build via Docker compose
         run: make build
 
-      - name: Create database for tests
-        run: make test-db
-
       - name: Run tests via Docker compose
         run: docker-compose run server tests
