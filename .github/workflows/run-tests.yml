@@ -15,6 +15,7 @@ jobs:
 
       - name: Create .env file
         run: |
+          echo "REDASH_DOCKERFILE=etc/Dockerfile.dev" >> .env
           echo "POSTGRES_DB=tests" >> .env
           echo "PGDATA_VOLUME=pgdata15-tests" >> .env
 
