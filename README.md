@@ -60,12 +60,12 @@ TODO
 
 Short-term tasks:
 
-- [ ] Restore tests and CI
+- [x] Restore tests and CI
+- [ ] Model to connect [Vector](https://vector.dev) with data sources
 - [ ] Use modern password hashing algorithms
 - [ ] Re-implement versioning for `Query` model
-- [ ] Model to connect [Vector](https://vector.dev) with data sources
 - [ ] Re-implement saving results logic, `QueryResult` model
-- [ ] Try reducing Docker image size for release builds
+- [x] Reduce Docker image size for release builds
 
 
 Credits

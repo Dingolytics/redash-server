@@ -15,14 +15,11 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo "REDASH_DOCKERFILE=etc/Dockerfile.dev" >> .env
           echo "REDASH_COOKIE_SECRET=test-cookie-secret-1234567890" >> .env
           echo "REDASH_SECRET_KEY=test-secret-key-1234567890" >> .env
-          echo "POSTGRES_DB=tests" >> .env
-          echo "PGDATA_VOLUME=pgdata15-tests" >> .env
 
-      - name: Build via Docker compose
-        run: make build
+      - name: Build for tests via Docker compose
+        run: make build-tests
 
       - name: Run tests via Docker compose
-        run: docker-compose run server tests
+        run: make tests
