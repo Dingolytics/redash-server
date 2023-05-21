@@ -37,3 +37,31 @@ class Stream(TimestampMixin, db.Model):
             "is_enabled": self.is_enabled,
             "is_archived": self.is_archived,
         }
+
+
+STREAM_SCHEMAS = {
+    "clickhouse": {
+        "rawlogs": """
+        """,
+
+        "applogs": """
+            CREATE TABLE {db_table} (
+                timestamp DateTime64(3),
+                level String,
+                message String,
+                platform String,
+                application String,
+                path String
+            ) ENGINE = MergeTree() ORDER BY (timestamp);
+        """,
+
+        "weblogs": """
+        """,
+
+        "events": """
+        """,
+
+        "metrics": """
+        """
+    }
+}

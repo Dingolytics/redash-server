@@ -49,9 +49,13 @@ docker-compose up --build
 Run tests:
 
 ```bash
-export POSTGRES_DB=tests
-export PGDATA_VOLUME=pgdata15-tests
-docker-compose run --rm server tests
+make test
+```
+
+or selectiely:
+
+```bash
+docker-compose -f docker-compose.tests.yml run --rm server tests tests/models
 ```
 
 
@@ -61,7 +65,9 @@ TODO
 Short-term tasks:
 
 - [x] Restore tests and CI
-- [ ] Model to connect [Vector](https://vector.dev) with data sources
+- [ ] Stream model to connect [Vector](https://vector.dev) with data sources
+  - [x] Auto-create ClickHouse table after Stream creation
+  - [ ] Auto-create Vector source after Stream creation
 - [ ] Use modern password hashing algorithms
 - [ ] Re-implement versioning for `Query` model
 - [ ] Re-implement saving results logic, `QueryResult` model

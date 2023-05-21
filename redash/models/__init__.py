@@ -54,6 +54,10 @@ from .types import (
 from .users import AccessPermission, AnonymousUser, ApiUser, Group, User  # noqa
 from .streams import Stream
 
+# Activate triggers for the models
+
+from redash.triggers import streams  # noqa
+
 logger = logging.getLogger(__name__)
 
 
