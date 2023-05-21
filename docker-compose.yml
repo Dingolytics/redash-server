@@ -79,4 +79,3 @@ services:
 
 volumes:
   pgdata15:
-  pgdata15-tests:

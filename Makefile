@@ -3,18 +3,18 @@
 build:
 	COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build
 
+up:
+	docker-compose up -d
+
 build-tests:
 	COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 \
 		docker-compose -f docker-compose.tests.yml build
 
-tests:
-	docker-compose -f docker-compose.tests.yml run server tests
-
-up:
-	COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose up -d --build
+test:
+	docker-compose -f docker-compose.tests.yml run server tests -x
 
 create-db:
-	docker-compose run server create_tables
+	docker-compose run --rm server create_tables
 
 shell:
 	docker-compose run --rm server bash
