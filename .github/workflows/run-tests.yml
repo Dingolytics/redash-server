@@ -22,4 +22,4 @@ jobs:
         run: make build-tests
 
       - name: Run tests via Docker compose
-        run: make tests
+        run: make test
