@@ -2,14 +2,14 @@
 
 build:
 	COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 \
-		docker-compose build
+	docker-compose build
 
 up:
 	docker compose up
 
 build-tests:
 	COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 \
-		docker compose -f docker-compose.tests.yml build
+	docker compose -f docker-compose.tests.yml build
 
 test:
 	docker compose -f docker-compose.tests.yml run --rm server tests -x

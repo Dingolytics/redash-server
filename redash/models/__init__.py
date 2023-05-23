@@ -52,7 +52,7 @@ from .types import (
     json_cast_property
 )
 from .users import AccessPermission, AnonymousUser, ApiUser, Group, User  # noqa
-from .streams import Stream
+from .streams import Stream, STREAM_SCHEMAS
 
 # Activate triggers for the models
 

@@ -12,6 +12,8 @@ wtforms~=3.0.1
 wtforms[email]
 markupsafe~=2.1.2
 #
+pydantic~=1.10.8
+#
 itsdangerous~=2.1.2
 #
 ua-parser~=0.16.1
