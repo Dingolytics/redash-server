@@ -82,11 +82,14 @@ services:
   vector:
     image: timberio/vector:0.30.X-alpine
     # restart: unless-stopped
+    environment:
+      VECTOR_WATCH_CONFIG: /etc/vector/vector.toml
     volumes:
       - vector-data:/var/lib/vector
       - vector-etc:/etc/vector:ro
     ports:
       - "8180:8180"
+    command: --watch-config
 
 volumes:
   pgdata15:
