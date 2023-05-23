@@ -72,3 +72,5 @@ rq==1.5.0
 rq-scheduler==0.9.1
 #
 restrictedpython~=6.0
+#
+toml~=0.10.2

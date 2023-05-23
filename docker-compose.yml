@@ -8,10 +8,12 @@ x-redash-service: &redash-service
     dockerfile: ${REDASH_DOCKERFILE:-Dockerfile}
   volumes:
     - .:/home/redash/app
+    - vector-etc:/home/redash/vector
   env_file:
     - .env
 
 x-redash-environment: &redash-environment
+  VECTOR_CONFIG_PATH: "/home/redash/vector/vector.toml"
   REDASH_LOG_LEVEL: "INFO"
   REDASH_REDIS_URL: "redis://redis:6379/0"
   REDASH_DATABASE_URL: "postgresql://postgres@postgres/postgres"
@@ -77,5 +79,16 @@ services:
       - "1080:80"
     restart: unless-stopped
 
+  vector:
+    image: timberio/vector:0.30.X-alpine
+    # restart: unless-stopped
+    volumes:
+      - vector-data:/var/lib/vector
+      - vector-etc:/etc/vector:ro
+    ports:
+      - "8180:8180"
+
 volumes:
   pgdata15:
+  vector-data:
+  vector-etc:

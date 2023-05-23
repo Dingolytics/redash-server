@@ -24,6 +24,7 @@ def create_app():
         migrate,
         security,
         tasks,
+        ingest,
     )
     from .metrics import request as request_metrics
     from .models import db, users
@@ -43,6 +44,7 @@ def create_app():
     handlers.init_app(app)
     users.init_app(app)
     tasks.init_app(app)
+    ingest.init_app(app)
 
     with app.app_context():
         reset_new_version_status()

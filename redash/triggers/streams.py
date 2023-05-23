@@ -1,5 +1,6 @@
 from sqlalchemy import event
 from redash.models.streams import Stream, STREAM_SCHEMAS
+from redash.ingest import get_vector_config
 
 
 @event.listens_for(Stream, "after_insert")
@@ -8,6 +9,7 @@ def after_insert_stream(mapper, connection, target) -> None:
     if data_source.type not in STREAM_SCHEMAS:
         return
     create_table_for_stream(target)
+    create_vector_ingest_config(target)
 
 
 def create_table_for_stream(stream: Stream) -> None:
@@ -23,3 +25,9 @@ def create_table_for_stream(stream: Stream) -> None:
     query_text = STREAM_SCHEMAS[data_source.type][db_table_preset]
     query_text = query_text.format(db_table=db_table)
     enqueue_query(query_text, data_source, None)
+
+
+def create_vector_ingest_config(stream: Stream) -> None:
+    # TODO: Abstraction layer for data source ingestion config
+    vector_config = get_vector_config()
+    vector_config.save()
