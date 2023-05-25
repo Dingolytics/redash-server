@@ -1,4 +1,4 @@
-.PHONY: build up create-db test-db clean down tests build redis-cli bash
+.PHONY: build up initdb migrate redis-cli shell test test-clean
 
 COMPOSE_CMD := docker compose
 
@@ -10,16 +10,22 @@ build:
 up:
 	$(COMPOSE_CMD) up
 
-createdb:
-	$(COMPOSE_CMD) run --rm server create_tables
+initdb:
+	$(COMPOSE_CMD) run --rm server manage database create-tables
 
-shell:
-	$(COMPOSE_CMD) run --rm server bash
+migrate:
+	$(COMPOSE_CMD) run --rm server manage db migrate
 
 redis-cli:
 	$(COMPOSE_CMD) run --rm redis redis-cli -h redis
 
-test: test-build
+shell:
+	$(COMPOSE_CMD) run --rm server bash
+
+test:
 	$(TEST_COMPOSE_CMD) build
 	$(TEST_COMPOSE_CMD) run --rm server-tests
+
+test-clean:
 	$(TEST_COMPOSE_CMD) stop
+	$(TEST_COMPOSE_CMD) down --volumes
