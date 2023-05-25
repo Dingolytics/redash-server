@@ -1,9 +1,9 @@
-from .vector import VectorIngestConfig
+from .vector import VectorConfig
 from .vector import get_vector_config
 from .vector import update_vector_config
 
 __all__ = [
-    'VectorIngestConfig',
+    'VectorConfig',
     'get_vector_config',
     'update_vector_config',
     'sync_vector_config_to_streams'
