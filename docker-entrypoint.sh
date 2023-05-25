@@ -58,7 +58,7 @@ server() {
   MAX_REQUESTS_JITTER=${MAX_REQUESTS_JITTER:-100}
   TIMEOUT=${REDASH_GUNICORN_TIMEOUT:-60}
   exec gunicorn -b 0.0.0.0:5000 --name redash \
-    -w${REDASH_WEB_WORKERS:-4} redash.wsgi:app \
+    -w${REDASH_WEB_WORKERS:-4} redash.main:app \
     --max-requests $MAX_REQUESTS --max-requests-jitter \
     $MAX_REQUESTS_JITTER --timeout $TIMEOUT
 }

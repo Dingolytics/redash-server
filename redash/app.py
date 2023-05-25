@@ -28,8 +28,6 @@ def create_app():
     from .metrics import request as request_metrics
     from .models import db, users
     from .utils import sentry
-    from .ingest import sync_vector_config_to_streams
-    from .version_check import reset_new_version_status
 
     sentry.init()
     app = Redash()
@@ -44,11 +42,5 @@ def create_app():
     handlers.init_app(app)
     users.init_app(app)
     tasks.init_app(app)
-
-    with app.app_context():
-        reset_new_version_status()
-
-    with app.app_context():
-        sync_vector_config_to_streams()
 
     return app

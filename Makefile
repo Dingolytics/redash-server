@@ -19,11 +19,7 @@ shell:
 redis-cli:
 	$(COMPOSE_CMD) run --rm redis redis-cli -h redis
 
-test-build:
+test: test-build
 	$(TEST_COMPOSE_CMD) build
-
-test-createdb:
-	$(TEST_COMPOSE_CMD) run --rm server-tests create_tables
-
-test: test-build test-createdb
 	$(TEST_COMPOSE_CMD) run --rm server-tests
+	$(TEST_COMPOSE_CMD) stop
