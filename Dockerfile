@@ -1,10 +1,10 @@
-FROM python:3.10.11-slim-bullseye AS compile-image
+FROM python:3.10.11-slim-bullseye AS dependencies
 
 # Multi-stage build:
 # https://docs.docker.com/develop/develop-images/multistage-build/
 # https://pythonspeed.com/articles/multi-stage-docker-python/
 
-# Stage 1: Compile Python dependencies
+# Stage 1: Install Python dependencies
 #-------------------------------------
 
 RUN apt update -y && \
@@ -21,38 +21,36 @@ COPY requirements.txt .
 RUN pip install --upgrade pip~=23.0.1 --timeout 120 \
   && pip install --user -r requirements.txt --timeout 120
 
-# Stage 2: Create the final image with application code
-#------------------------------------------------------
+# Stage 2: Create image with application code
+#--------------------------------------------
 
-FROM python:3.10.11-slim-bullseye
+FROM python:3.10.11-slim-bullseye AS application
 
-# Define and create non-root user
 ARG USERNAME=redash
 RUN useradd --create-home ${USERNAME}
 
-# Copy Python dependencies from compile-image stage
-COPY --from=compile-image /root/.local /home/${USERNAME}/.local
+COPY --chown=${USERNAME} --from=dependencies \
+  /root/.local /home/${USERNAME}/.local
 
-# Make sure scripts in .local are usable:
 ENV PATH=/home/${USERNAME}/.local/bin:$PATH
 
-# Working directory for application
 WORKDIR /home/${USERNAME}/app/
 
-# Copy source and configurations
-COPY LICENSE LICENSE.redash manage.py docker-entrypoint.sh ./
-COPY etc ./etc/
-COPY migrations ./migrations/
-COPY redash ./redash/
-COPY tests ./tests/
-
-# Swith to non-root user
-RUN chown -R ${USERNAME} ./ /home/${USERNAME}/.local
 USER ${USERNAME}
 
-# Expose port
+COPY --chown=${USERNAME} LICENSE* manage.py docker-entrypoint.sh ./
+COPY --chown=${USERNAME} etc ./etc/
+COPY --chown=${USERNAME} migrations ./migrations/
+COPY --chown=${USERNAME} redash ./redash/
+
 EXPOSE 5000
 
-# Define entrypoint and default command
 ENTRYPOINT ["./docker-entrypoint.sh"]
-CMD ["server"]
+
+# Stage 3: Create image for testing
+#----------------------------------
+
+FROM application AS tests
+
+COPY --chown=${USERNAME} etc/requirements.tests.txt ./
+RUN pip install --user -r requirements.tests.txt --timeout 120

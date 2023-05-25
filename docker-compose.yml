@@ -1,11 +1,9 @@
-# This configuration file is for the **development** setup.
-
 version: "3.9"
 
 x-redash-service: &redash-service
   build:
     context: .
-    dockerfile: ${REDASH_DOCKERFILE:-Dockerfile}
+    target: application
   volumes:
     - .:/home/redash/app
     - vector-etc:/home/redash/vector

@@ -1,27 +1,29 @@
 .PHONY: build up create-db test-db clean down tests build redis-cli bash
 
+COMPOSE_CMD := docker compose
+
+TEST_COMPOSE_CMD := docker compose -f docker-compose.tests.yml
+
 build:
-	COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 \
-	docker-compose build
+	$(COMPOSE_CMD) build
 
 up:
-	docker compose up
-
-test-build:
-	COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 \
-	docker compose -f docker-compose.tests.yml build
-
-test-createdb:
-	docker compose -f docker-compose.tests.yml run --rm server create_tables
-
-test: test-build test-createdb
-	docker compose -f docker-compose.tests.yml run --rm server tests -x
+	$(COMPOSE_CMD) up
 
 createdb:
-	docker compose run --rm server create_tables
+	$(COMPOSE_CMD) run --rm server create_tables
 
 shell:
-	docker compose run --rm server bash
+	$(COMPOSE_CMD) run --rm server bash
 
 redis-cli:
-	docker compose run --rm redis redis-cli -h redis
+	$(COMPOSE_CMD) run --rm redis redis-cli -h redis
+
+test-build:
+	$(TEST_COMPOSE_CMD) build
+
+test-createdb:
+	$(TEST_COMPOSE_CMD) run --rm server-tests create_tables
+
+test: test-build test-createdb
+	$(TEST_COMPOSE_CMD) run --rm server-tests

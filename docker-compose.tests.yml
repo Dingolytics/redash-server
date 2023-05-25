@@ -1,34 +1,33 @@
-# This configuration file is for the **development** setup.
-
 version: "3.9"
 
 x-redash-service: &redash-service
   build:
     context: .
-    dockerfile: etc/Dockerfile.dev
+    target: tests
   volumes:
     - .:/home/redash/app
+    - vector-tests:/home/redash/vector
   env_file:
     - .env
 
 x-redash-environment: &redash-environment
   REDASH_LOG_LEVEL: "INFO"
-  REDASH_REDIS_URL: "redis://redis:6379/0"
+  REDASH_REDIS_URL: "redis://redis-tests:6379/0"
   REDASH_DATABASE_URL: "postgresql://postgres@postgres-tests/tests"
 
 services:
-  server:
+  server-tests:
     <<: *redash-service
     depends_on:
       - postgres-tests
-      - redis
+      - redis-tests
     environment:
       <<: *redash-environment
       SQLALCHEMY_SILENCE_UBER_WARNING: 1
       PYTHONUNBUFFERED: 0
-    command: dev_server
+    command: tests -x
 
-  redis:
+  redis-tests:
     image: redis:6.2.11-alpine
     restart: unless-stopped
 
@@ -44,3 +43,4 @@ services:
 
 volumes:
   pgdata15-tests:
+  vector-tests:

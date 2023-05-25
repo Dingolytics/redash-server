@@ -18,8 +18,5 @@ jobs:
           echo "REDASH_COOKIE_SECRET=test-cookie-secret-1234567890" >> .env
           echo "REDASH_SECRET_KEY=test-secret-key-1234567890" >> .env
 
-      - name: Build for tests via Docker compose
-        run: make build-tests
-
-      - name: Run tests via Docker compose
+      - name: Build and run tests
         run: make test
