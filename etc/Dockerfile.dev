@@ -33,25 +33,21 @@ RUN useradd --create-home ${USERNAME}
 # Copy Python dependencies from compile-image stage
 COPY --from=compile-image /root/.local /home/${USERNAME}/.local
 
-# Make sure scripts in .local are usable:
-ENV PATH=/home/${USERNAME}/.local/bin:$PATH
-
-# Working directory for application
+# Set working directory, switch to non-root user
 WORKDIR /home/${USERNAME}/app/
-
-# Copy source and configurations
-COPY LICENSE LICENSE.redash manage.py docker-entrypoint.sh ./
-COPY etc ./etc/
-COPY migrations ./migrations/
-COPY redash ./redash/
-COPY tests ./tests/
-
-# Swith to non-root user
 RUN chown -R ${USERNAME} ./ /home/${USERNAME}/.local
+ENV PATH=/home/${USERNAME}/.local/bin:$PATH
 USER ${USERNAME}
 
 # Install dependencies for testing
+COPY etc/requirements.dev.txt ./etc/
 RUN pip install --user -r ./etc/requirements.dev.txt --timeout 120
+
+# Copy source and configurations
+COPY LICENSE LICENSE.redash manage.py docker-entrypoint.sh ./
+COPY migrations ./migrations/
+COPY redash ./redash/
+COPY tests ./tests/
 
 # Expose port
 EXPOSE 5000

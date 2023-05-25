@@ -49,10 +49,10 @@ def authenticated_user(c, user=None):
 
 class BaseTestCase(TestCase):
     def setUp(self):
+        limiter.enabled = False
         self.app = create_app()
         self.db = db
         self.app.config["TESTING"] = True
-        limiter.enabled = False
         self.app_ctx = self.app.app_context()
         self.app_ctx.push()
         db.session.close()
@@ -64,7 +64,6 @@ class BaseTestCase(TestCase):
     def tearDown(self):
         db.session.remove()
         db.engine.dispose()
-        # db.get_engine(self.app).dispose()
         self.app_ctx.pop()
         redis_connection.flushdb()
 

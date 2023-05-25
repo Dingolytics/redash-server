@@ -7,14 +7,17 @@ build:
 up:
 	docker compose up
 
-build-tests:
+test-build:
 	COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 \
 	docker compose -f docker-compose.tests.yml build
 
-test:
+test-createdb:
+	docker compose -f docker-compose.tests.yml run --rm server create_tables
+
+test: test-build test-createdb
 	docker compose -f docker-compose.tests.yml run --rm server tests -x
 
-create-db:
+createdb:
 	docker compose run --rm server create_tables
 
 shell:
