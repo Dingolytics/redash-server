@@ -73,7 +73,6 @@ data_source_factory = ModelFactory(
 stream_factory = ModelFactory(
     redash.models.Stream,
     name=Sequence("Test {}"),
-    user=user_factory.create,
     data_source=data_source_factory.create,
     db_table='test_stream',    
 )
@@ -288,6 +287,9 @@ class Factory(object):
             )
 
         return data_source
+
+    def create_stream(self, **kwargs):
+        return stream_factory.create(**kwargs)
 
     def create_dashboard(self, **kwargs):
         args = {"user": self.user, "org": self.org}

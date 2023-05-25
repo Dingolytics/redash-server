@@ -12,30 +12,33 @@ enabled = true
 '''
 
 VECTOR_HTTP_INPUT = "http_server"
-
 VECTOR_HTTP_ROUTER = "http_router"
+VECTOR_HTTP_PATH_KEY = "_path_"
 
 
 @lru_cache
-def get_vector_config() -> 'VectorConfig':
-    config_path = os.environ.get('VECTOR_CONFIG_PATH') or 'vector.toml'
+def get_vector_config() -> "VectorConfig":
+    config_path = os.environ.get("VECTOR_CONFIG_PATH") or "vector.toml"
     return VectorConfig(config_path)
 
 
-def update_vector_config(streams: list, clean: bool = False) -> None:
+def update_vector_config(
+    streams: list, clean: bool = False, sink_prefix: str = "ingest-",
+    path_key: str = VECTOR_HTTP_PATH_KEY, router_key: str = VECTOR_HTTP_ROUTER
+) -> "VectorConfig":
     vector_config = get_vector_config()
     if not clean:
         vector_config.load()
-    router = VectorRouteTransform(key=VECTOR_HTTP_ROUTER)
+    router = VectorRouteTransform(key=router_key)
     for stream in streams:
-        key = stream.db_table.replace('_', '-').replace('.', '-')
-        sink_key = f"clickhouse-{key}"
-        ingest_key = f"/{key}"  # TODO: Use random or salted hash
-        router.add_route(key, f'._path_ == "{ingest_key}"')
+        key = stream.db_table.replace("_", "-").replace(".", "-")
+        sink_key = f"{sink_prefix}{key}"
+        path_val = f"/{key}"  # TODO: Use random or salted hash
+        router.add_route(key, f'.{path_key} == "{path_val}"')
         options = stream.data_source.options.to_dict()
         sink = VectorClickHouseSink(
             key=sink_key,
-            inputs=[f"{VECTOR_HTTP_ROUTER}.{key}"],
+            inputs=[f"{router_key}.{key}"],
             table=stream.db_table,
             auth=VectorClickHouseAuth(**options),
             endpoint=options["url"],
@@ -48,6 +51,7 @@ def update_vector_config(streams: list, clean: bool = False) -> None:
         # print(stream.data_source.options.to_dict())
     vector_config.add_transform(router)
     vector_config.save()
+    return vector_config
 
 
 class VectorSection(BaseModel):
@@ -58,7 +62,7 @@ class VectorHTTPSource(VectorSection):
     type: str = VECTOR_HTTP_INPUT
     address: str = "0.0.0.0:8000"
     method = "POST"
-    path_key: str = "_path_"
+    path_key: str = VECTOR_HTTP_PATH_KEY
     decoding: dict = {"codec": "json"}
 
 
@@ -106,7 +110,7 @@ class VectorConfig:
 
     def save(self) -> None:
         self.config_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.config_path, 'w') as f:
+        with open(self.config_path, "w") as f:
             toml.dump(self.config, f)
 
     def add_defaults(self) -> None:
