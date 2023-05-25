@@ -6,7 +6,6 @@ x-redash-service: &redash-service
     target: tests
   volumes:
     - .:/home/redash/app
-    - vector-tests:/home/redash/vector
   env_file:
     - .env
 
@@ -14,6 +13,7 @@ x-redash-environment: &redash-environment
   REDASH_LOG_LEVEL: "INFO"
   REDASH_REDIS_URL: "redis://redis-tests:6379/0"
   REDASH_DATABASE_URL: "postgresql://postgres@postgres-tests/tests"
+  VECTOR_CONFIG_PATH: "/tmp/vector/vector.toml"
 
 services:
   server-tests:
