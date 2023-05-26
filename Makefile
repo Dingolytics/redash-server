@@ -7,11 +7,11 @@ TEST_COMPOSE_CMD := docker compose -f docker-compose.tests.yml
 build:
 	$(COMPOSE_CMD) build
 
-up:
-	$(COMPOSE_CMD) up
-
 initdb:
 	$(COMPOSE_CMD) run --rm server manage database create-tables
+
+up: initdb
+	$(COMPOSE_CMD) up
 
 migrate:
 	$(COMPOSE_CMD) run --rm server manage db migrate
