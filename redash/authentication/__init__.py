@@ -63,6 +63,7 @@ def load_user(user_id_with_identity):
 
 def request_loader(request):
     user = None
+
     if settings.AUTH_TYPE == "hmac":
         user = hmac_load_user_from_request(request)
     elif settings.AUTH_TYPE == "api_key":
@@ -77,6 +78,7 @@ def request_loader(request):
 
     if org_settings["auth_jwt_login_enabled"] and user is None:
         user = jwt_token_load_user_from_request(request)
+
     return user
 
 
@@ -243,31 +245,35 @@ def logout_and_redirect_to_index():
 
 
 def init_app(app):
-    from redash.authentication import (
-        saml_auth,
-        remote_user_auth,
-        ldap_auth,
-    )
-
-    from redash.authentication.google_oauth import create_google_oauth_blueprint
+    # from redash.security import csrf
+    # from redash.authentication import (
+    #     saml_auth,
+    #     remote_user_auth,
+    #     ldap_auth,
+    # )
+    # from redash.authentication.google_oauth import create_google_oauth_blueprint
 
     login_manager.init_app(app)
     login_manager.anonymous_user = models.AnonymousUser
     login_manager.REMEMBER_COOKIE_DURATION = settings.REMEMBER_COOKIE_DURATION
 
-    @app.before_request
-    def extend_session():
-        session.permanent = True
-        app.permanent_session_lifetime = timedelta(seconds=settings.SESSION_EXPIRY_TIME)
-
-    from redash.security import csrf
+    # @app.before_request
+    # def extend_session():
+    #     session.permanent = True
+    #     app.permanent_session_lifetime = timedelta(seconds=settings.SESSION_EXPIRY_TIME)
 
     # Authlib's flask oauth client requires a Flask app to initialize
-    for blueprint in [create_google_oauth_blueprint(app), saml_auth.blueprint, remote_user_auth.blueprint, ldap_auth.blueprint, ]:
-        csrf.exempt(blueprint)
-        app.register_blueprint(blueprint)
+    # for blueprint in [
+    #     create_google_oauth_blueprint(app),
+    #     saml_auth.blueprint, 
+    #     remote_user_auth.blueprint,
+    #     ldap_auth.blueprint,
+    # ]:
+    #     csrf.exempt(blueprint)
+    #     app.register_blueprint(blueprint)
 
     user_logged_in.connect(log_user_logged_in)
+
     login_manager.request_loader(request_loader)
 
 

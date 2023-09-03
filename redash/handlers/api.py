@@ -314,7 +314,9 @@ api.add_org_resource(
     QueryResource, "/api/queries/<query_id>", endpoint="query"
 )
 api.add_org_resource(
-    QueryForkResource, "/api/queries/<query_id>/fork", endpoint="query_fork"
+    QueryForkResource,
+    "/api/queries/<query_id>/fork",
+    endpoint="query_fork"
 )
 api.add_org_resource(
     QueryRegenerateApiKeyResource,
@@ -421,3 +423,14 @@ api.add_org_resource(
 api.add_org_resource(
     OrganizationSettings, "/api/settings/organization", endpoint="organization_settings"
 )
+
+# Special resources:
+#
+# - Widgets with anonymous access and query real-time evaluation
+# - etc.
+
+# api.add_resource(
+#     QueryWidgetResource,
+#     "/widgets/<query_id>",
+#     endpoint="query_widget",
+# )
