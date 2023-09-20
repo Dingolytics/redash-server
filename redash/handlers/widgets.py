@@ -4,6 +4,7 @@ from flask import request, Response
 from jinja2 import Template
 from redash import models
 from redash.handlers.base import routes
+from redash.security import csp_allows_embeding
 from redash.utils import collect_parameters_from_request
 
 DEFAULT_TEMPLATES = {
@@ -12,7 +13,7 @@ DEFAULT_TEMPLATES = {
             'width="{{ width }}" height="{{ height }}" '
             'viewBox="0 0 {{ width }} {{ height }}">'
         '<text x="{{ x }}" y="{{ y }}" fill="{{ color }}" '
-            'text-anchor="{{ anchor }}" '
+            'text-anchor="{{ anchor }}" dominant-baseline="auto" '
             'font-size="{{ size }}" font-family="{{ font }}">'
         '{{ value }}'
         '</text>'
@@ -34,12 +35,13 @@ def template_response(
             value = data["rows"][0]["value"]
         except (KeyError, IndexError):
             return Response(
-                "Query must return a single row with column named 'value'",
+                "Query must return a single row with a column named 'value'",
                 mimetype="text/plain",
                 status=422
             )
         params = request.args.copy()
-        params.setdefault("width", "100%")
+        params["value"] = value
+        params.setdefault("width", 128)
         params.setdefault("height", 32)
         params.setdefault("x", 0)
         params.setdefault("y", 16)
@@ -48,13 +50,14 @@ def template_response(
         params.setdefault("size", "1em")
         params.setdefault("font", "sans-serif")
         renderer = DEFAULT_TEMPLATES[template]
-        content = renderer.render(value=value, **params)
+        content = renderer.render(**params)
         return Response(content, mimetype="image/svg+xml")
 
     return None
 
 
 @routes.route("/ext/widgets/<int:query_id>/<template>", methods=["GET"])
+@csp_allows_embeding
 def render_widget(query_id: int, template: str):
     query = models.Query.get_by_id(query_id)
     query_runner = query.data_source.query_runner
